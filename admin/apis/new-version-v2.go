@@ -107,6 +107,19 @@ func NewVersionV2Start(req models.NewVersionReqV2, dir string) {
 		req.YoutubeDsc = getZipFile(pdir, "ytok", fname, req.YtErrorSkip)
 	}
 
+	if !req.UseG {
+		req.GoogleImg = ""
+	}
+	if !req.UseY {
+		req.YahooDsc = ""
+	}
+	if !req.UseB {
+		req.BingDsc = ""
+	}
+	if !req.UseYT {
+		req.YoutubeDsc = ""
+	}
+
 	cdb := create_db_v2.New(req)
 	err := cdb.Start()
 	if err != nil {

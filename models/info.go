@@ -60,6 +60,11 @@ type NewVersionReqV2 struct {
 	BErrorSkip   bool   `json:"b_error_skip"`
 	YtErrorSkip  bool   `json:"yt_error_skip"`
 
+	UseG  bool `json:"use_g"`
+	UseY  bool `json:"use_y"`
+	UseB  bool `json:"use_b"`
+	UseYT bool `json:"use_yt"`
+
 	EndRemove   bool `json:"end_remove"`
 	DownMainPic bool `json:"down_main_pic"`
 }
