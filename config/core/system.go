@@ -12,5 +12,5 @@ type System struct {
 	TGChatId  string `mapstructure:"tg-chat-id" json:"tg-chat-id" yaml:"tg-chat-id"`
 	Info      string `mapstructure:"info" json:"info" yaml:"info"`
 	Category  bool   `mapstructure:"category" json:"category" yaml:"category"`
-	Template  bool   `mapstructure:"template" json:"template" yaml:"template"`
+	Template  string `mapstructure:"template" json:"template" yaml:"template"`
 }
