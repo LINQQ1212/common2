@@ -3,6 +3,7 @@ module github.com/LINQQ1212/common2
 go 1.20
 
 require (
+	github.com/CloudyKit/jet/v6 v6.2.0
 	github.com/DavidBelicza/TextRank/v2 v2.1.3
 	github.com/chenjiandongx/ginprom v0.0.0-20210617023641-6c809602c38a
 	github.com/cornelk/hashmap v1.0.8
@@ -18,6 +19,7 @@ require (
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/pkg/sftp v1.13.5
 	github.com/prometheus/client_golang v1.14.0
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/samber/lo v1.37.0
 	github.com/songzhibin97/gkit v1.2.8
 	github.com/spf13/viper v1.15.0
@@ -34,6 +36,7 @@ require (
 )
 
 require (
+	github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
