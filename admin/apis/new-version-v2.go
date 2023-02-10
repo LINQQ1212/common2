@@ -142,7 +142,7 @@ func NewVersionV2Start(req models.NewVersionReqV2, dir string) {
 	}
 	sendTgMessage(req.Domain + " #创建完成#")
 	if req.EndRemove {
-		os.Remove(pdir)
+		os.RemoveAll(pdir)
 	}
 	if req.RemoteEndRemove {
 		config := &ssh.ClientConfig{
@@ -162,7 +162,7 @@ func NewVersionV2Start(req models.NewVersionReqV2, dir string) {
 			return
 		}
 		defer session.Close()
-		session.Run("rm " + pdir)
+		session.Run("rm -rf" + pdir)
 	}
 }
 
