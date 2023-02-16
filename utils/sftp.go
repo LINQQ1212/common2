@@ -22,20 +22,21 @@ func GetRecursively(sftpClient *sftp.Client, remotePath string, localPath string
 		}
 		remoteFullFilepath := remoteWalker.Path()
 		localFilepath, _ := getRecursivelyPath(localPath, remotePath, remoteFullFilepath)
-		if remoteWalker.Stat().IsDir() {
-			localStat, localStatErr := os.Stat(localFilepath)
-			if lo.IndexOf(skipDir, localStat.Name()) > -1 {
+		sata := remoteWalker.Stat()
+		if sata.IsDir() {
+			if lo.Contains(skipDir, sata.Name()) {
 				remoteWalker.SkipDir()
 				continue
 			}
+			localStat, localStatErr := os.Stat(localFilepath)
 			// 存在するかつディレクトリではない場合エラー
 			if !os.IsNotExist(localStatErr) && !localStat.IsDir() {
 				err = errors.New("Cannot create a directry when that file already exists")
 				return
 			}
-			mode := remoteWalker.Stat().Mode()
-			if os.IsNotExist(localStatErr) {
 
+			mode := sata.Mode()
+			if os.IsNotExist(localStatErr) {
 				err = os.Mkdir(localFilepath, mode)
 				if err != nil {
 					return
@@ -49,7 +50,6 @@ func GetRecursively(sftpClient *sftp.Client, remotePath string, localPath string
 		}
 		fs = append(fs, localFilepath)
 	}
-
 	return
 }
 
