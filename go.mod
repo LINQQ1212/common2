@@ -18,6 +18,7 @@ require (
 	github.com/klauspost/compress v1.15.15
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/pkg/sftp v1.13.5
+	github.com/potproject/easysftp v0.0.0-20200307143227-dca537bfb61e
 	github.com/prometheus/client_golang v1.14.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/samber/lo v1.37.0

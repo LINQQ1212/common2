@@ -57,7 +57,22 @@ func NewVersionV2Start(req models.NewVersionReqV2, dir string) {
 			sendTgMessage(req.Domain + "\nIP:" + req.RemoteHost + "\n" + "远程服务器链接失败：" + err.Error())
 			return
 		}
-		list, err := download2(sftpClient, pdir, req.TopDir)
+		spikDir := []string{"log", "text"}
+		if !req.UseG {
+			spikDir = append(spikDir, "gok")
+		}
+		if !req.UseY {
+			spikDir = append(spikDir, "yok")
+		}
+		if !req.UseB {
+			spikDir = append(spikDir, "bok")
+		}
+		if !req.UseYT {
+			spikDir = append(spikDir, "ytok")
+		}
+
+		list, err := utils.GetRecursively(sftpClient, pdir, pdir, spikDir)
+		//list, err := download2(sftpClient, pdir, req.TopDir)
 		if err != nil {
 			sendTgMessage(req.Domain + "\nIP:" + req.RemoteHost + "\n" + "复制远程服务器的文件失败：" + err.Error())
 			return
@@ -166,6 +181,7 @@ func NewVersionV2Start(req models.NewVersionReqV2, dir string) {
 	}
 }
 
+/*
 func download2(sourceClient *sftp.Client, sourcePath string, destPath string) (fs []string, err error) {
 	var sourceFile *sftp.File
 	sourceFile, err = sourceClient.Open(sourcePath)
@@ -219,7 +235,7 @@ func download2(sourceClient *sftp.Client, sourcePath string, destPath string) (f
 		}
 	}
 	return
-}
+}*/
 
 func getZipFile(topDir, dir, fname string, skip bool) string {
 	mdir := path.Join(topDir, dir)
