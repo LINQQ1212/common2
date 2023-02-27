@@ -10,4 +10,5 @@ type Server struct {
 	Local      core.Local        `mapstructure:"local" json:"local" yaml:"local"`
 	Domains    map[string]string `mapstructure:"domains" json:"domains" yaml:"domains"`
 	Statistics map[string]string `mapstructure:"statistics" json:"statistics" yaml:"statistics"`
+	ExtConfig  any               `mapstructure:"ext-config" json:"ext-config" yaml:"ext-config"`
 }

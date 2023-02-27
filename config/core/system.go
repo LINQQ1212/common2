@@ -11,6 +11,4 @@ type System struct {
 	TGToken   string `mapstructure:"tg-token" json:"tg-token" yaml:"tg-token"`
 	TGChatId  string `mapstructure:"tg-chat-id" json:"tg-chat-id" yaml:"tg-chat-id"`
 	Info      string `mapstructure:"info" json:"info" yaml:"info"`
-	Category  bool   `mapstructure:"category" json:"category" yaml:"category"`
-	Template  string `mapstructure:"template" json:"template" yaml:"template"`
 }

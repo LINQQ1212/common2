@@ -427,6 +427,22 @@ func (c *Create) one(fname string, r io.Reader) {
 	}
 }
 
+var HandleProduct = func(p *models.Product, pi *models.ProductInfo) {
+	pi.Description = strings.ReplaceAll(pi.Description, "<h2>商品の情報</h2>", "")
+	pi.Description = strings.ReplaceAll(pi.Description, "<h2>商品情報</h2>", "")
+	pi.Description = strings.ReplaceAll(pi.Description, "<h2 class=\"Heading Heading-f\">商品情報</h2>", "")
+
+	ttti := strings.Index(pi.Description, "<table border=\"1\">")
+	if ttti > 0 {
+		pi.Description = pi.Description[0:ttti]
+	}
+
+	pi.Description = strings.Replace(pi.Description, "<style>table th{border: 1px solid #ccc !important;}</style>", "", 1)
+	pi.Description = strings.TrimSuffix(pi.Description, "</p>")
+	pi.Description = strings.TrimPrefix(pi.Description, "<p>")
+	pi.Description = htmlReg.ReplaceAllString(pi.Description, "")
+}
+
 var brandReg = regexp.MustCompile("<b>ブランド</b></th><th>(.+?)</th>")
 var htmlReg = regexp.MustCompile("<.+?>|</.+?>")
 
@@ -479,7 +495,6 @@ func (c *Create) handleOneRow(domain []byte, line []byte) error {
 
 	/*
 		http.Post(Bot, "application/json", strings.NewReader(`{"chat_id":`+ChatId+`,"text":"内容模板不足，请及时处理 剩余：`+strconv.Itoa(l)+`"}`))
-
 	*/
 	p := &models.Product{
 		ID:       atomic.AddUint64(&c.pId, 1),
@@ -510,22 +525,10 @@ func (c *Create) handleOneRow(domain []byte, line []byte) error {
 	if len(brandArr) > 1 {
 		p.Brand = brandArr[1]
 	}
-	pi.Description = strings.ReplaceAll(pi.Description, "<h2>商品の情報</h2>", "")
-	pi.Description = strings.ReplaceAll(pi.Description, "<h2>商品情報</h2>", "")
-	pi.Description = strings.ReplaceAll(pi.Description, "<h2 class=\"Heading Heading-f\">商品情報</h2>", "")
 
-	pppp := ""
-	ttti := strings.Index(pi.Description, "<table border=\"1\">")
-	if ttti > 0 {
-		pi.Description = pi.Description[0:ttti]
-		pppp = htmlReg.ReplaceAllString(pi.Description, " ")
-	}
+	HandleProduct(p, pi)
 
-	pi.Description = strings.Replace(pi.Description, "<style>table th{border: 1px solid #ccc !important;}</style>", "", 1)
-	pi.Description = strings.TrimSuffix(pi.Description, "</p>")
-	pi.Description = strings.TrimPrefix(pi.Description, "<p>")
-	pi.Description = htmlReg.ReplaceAllString(pi.Description, "")
-
+	pppp := htmlReg.ReplaceAllString(pi.Description, " ")
 	arrkws := GetKeys(p.Name + " " + pi.MDescription + " " + pppp)
 
 	for _, arrkw := range arrkws {
