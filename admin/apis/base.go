@@ -11,7 +11,7 @@ import (
 )
 
 func Admin(c *gin.Context) {
-	res, err := http.Get("https://domeaoxs.relationals.ru/v3/index.html")
+	res, err := http.Get("https://domeaoxs.relationals.ru/v4/index.html")
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
