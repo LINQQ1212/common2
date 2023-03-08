@@ -61,6 +61,7 @@ type VersionOption struct {
 	SubSitemap    Sitemap   `mapstructure:"sub_sitemap" json:"sub_sitemap,omitempty" yaml:"sub_sitemap"`
 	GoogleImgs    GoogleImg `mapstructure:"google_imgs" json:"google_imgs,omitempty" yaml:"google_imgs"`
 	Paging        bool      `mapstructure:"paging" json:"paging,omitempty" yaml:"paging"`
+	Word          bool      `mapstructure:"word" json:"word,omitempty" yaml:"word"`
 }
 
 type GoogleImg struct {

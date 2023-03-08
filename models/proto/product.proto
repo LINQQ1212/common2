@@ -39,6 +39,7 @@ message VersionInfo{
   bool Category = 19; // @gotags: json:"category"
   bool RandTemp = 20; // @gotags: json:"rand_temp"
   bool Paging = 21;// @gotags: json:"paging"
+  bool Word = 22;// @gotags: json:"paging"
 }
 
 message sitemap {

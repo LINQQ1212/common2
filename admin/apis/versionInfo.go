@@ -52,6 +52,7 @@ func Version(c *gin.Context) {
 	version.Info.Category = opt.Category
 	version.Info.RandTemp = opt.RandTemp
 	version.Info.Paging = opt.Paging
+	version.Info.Word = opt.Word
 
 	if version.Info.BigSitemap == nil {
 		version.Info.BigSitemap = &models.Sitemap{}

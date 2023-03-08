@@ -281,6 +281,7 @@ func (c *Create) Start() error {
 		Category:      c.Info.Category,
 		RandTemp:      c.Info.RandTemp,
 		Paging:        c.Info.Paging,
+		Word:          c.Info.Word,
 	}
 	vinfo.BigSitemap.Size = c.Info.BigSitemap.Size
 	vinfo.BigSitemap.Option = c.Info.BigSitemap.Option
