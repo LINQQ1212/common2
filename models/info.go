@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"github.com/LINQQ1212/common2/config/core"
 	"go.etcd.io/bbolt"
 	"golang.org/x/sync/singleflight"
 	"google.golang.org/protobuf/proto"
@@ -40,33 +41,8 @@ type NewVersionReq struct {
 
 type NewVersionReqV2 struct {
 	Domain         string `json:"domain"`
-	TopDir         string `json:"top_dir"`
 	ProductTarLink string `json:"product_tar_link"`
-
-	RemoteCopy      bool   `json:"remote_copy"` // 是否远程复制
-	RemoteHost      string `json:"remote_host"`
-	RemotePort      string `json:"remote_port"`
-	RemoteUser      string `json:"remote_user"`
-	RemotePwd       string `json:"remote_pwd"`
-	RemoteEndRemove bool   `json:"remote_end_remove"` // 结束同时删除远程服务器的文件
-
-	AutoFilePath bool   `json:"auto_file_path"`
-	GoogleImg    string `json:"google_img"`
-	YahooDsc     string `json:"yahoo_dsc"`
-	BingDsc      string `json:"bing_dsc"`
-	YoutubeDsc   string `json:"youtube_dsc"`
-	GErrorSkip   bool   `json:"g_error_skip"`
-	YErrorSkip   bool   `json:"y_error_skip"`
-	BErrorSkip   bool   `json:"b_error_skip"`
-	YtErrorSkip  bool   `json:"yt_error_skip"`
-
-	UseG  bool `json:"use_g"`
-	UseY  bool `json:"use_y"`
-	UseB  bool `json:"use_b"`
-	UseYT bool `json:"use_yt"`
-
-	EndRemove   bool `json:"end_remove"`
-	DownMainPic bool `json:"down_main_pic"`
+	core.NewVersionOption
 }
 
 type Version struct {
@@ -166,6 +142,10 @@ func NewVersion(dir string, fname string) (*Version, error) {
 		}
 	}
 
+	for _, cate := range v.Cates {
+		cate.Count = GetChildrenCount(cate)
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -174,4 +154,13 @@ func NewVersion(dir string, fname string) (*Version, error) {
 
 	}*/
 	return v, nil
+}
+
+func GetChildrenCount(c *Cate) uint64 {
+	if len(c.Children) > 0 {
+		for _, child := range c.Children {
+			c.Count += GetChildrenCount(child)
+		}
+	}
+	return c.Count
 }

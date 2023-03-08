@@ -35,10 +35,11 @@ func Login(c *gin.Context) {
 		}
 
 		response.OkWithData(gin.H{
-			"id":    "root",
-			"name":  "root",
-			"token": str,
-			"info":  global.CONFIG.System.Info,
+			"id":                 "root",
+			"name":               "root",
+			"token":              str,
+			"info":               global.CONFIG.System.Info,
+			"new-version-option": global.CONFIG.NewVersionOption,
 		}, c)
 		return
 	}

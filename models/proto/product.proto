@@ -22,7 +22,36 @@ message VersionInfo{
   string    FileName = 3;
   uint64 Count = 4;
   bool    DownPic  =5;
+  bool UseG = 6;
+  bool UseY = 7;
+  bool UseB = 8;
+  bool UseYT = 9;
+  string    List = 10;// @gotags: json:"list"
+  string    Article = 11;// @gotags: json:"article"
+  int32 Option = 12; // @gotags: json:"option"
+
+  int32 CategoryLink = 13; // @gotags: json:"category_link"
+  int32 ProductLink = 14; // @gotags: json:"product_link"
+  bool UseBigSitemap = 15; // @gotags: json:"use_big_sitemap"
+  sitemap BigSitemap = 16; // @gotags: json:"big_sitemap"
+  sitemap SubSitemap = 17; // @gotags: json:"sub_sitemap"
+  external GoogleImg = 18; // @gotags: json:"google_imgs"
+  bool Category = 19; // @gotags: json:"category"
+  bool RandTemp = 20; // @gotags: json:"rand_temp"
+  bool Paging = 21;// @gotags: json:"paging"
 }
+
+message sitemap {
+  int32 Size = 1; // @gotags: json:"size"
+  int32 Option = 2; // @gotags: json:"option"
+}
+
+message external {
+  int32 Size = 1; // @gotags: json:"size"
+  int32 Option = 2; // @gotags: json:"option"
+  int32 GroupSize = 3; // @gotags: json:"group_size"
+}
+
 /*
  map<uint64,Cate> Cates = 6; // @gotags: protobuf:"-" json:"-" storm:"-"
   repeated Cate Categories = 7; // @gotags: protobuf:"-" json:"-" storm:"-"

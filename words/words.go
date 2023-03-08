@@ -1,6 +1,7 @@
 package words
 
 import (
+	"bytes"
 	"math/rand"
 	"os"
 	"strings"
@@ -9,10 +10,13 @@ import (
 
 func NewWords(f string) *Words {
 	w := &Words{}
-	//
 	b, err := os.ReadFile(f)
 	if err != nil {
 		panic(err)
+	}
+	b = bytes.TrimSpace(b)
+	if string(b) == "" {
+		w.list = []string{}
 	}
 	arr := strings.Split(string(b), "\n")
 	for _, s := range arr {
@@ -31,19 +35,31 @@ type Words struct {
 }
 
 func (w *Words) GetRand() string {
+	if w.count == 0 {
+		return ""
+	}
 	return w.list[rand.Int()%w.count]
 }
 
 func (w *Words) GetByIndex(id uint64, index int) string {
+	if w.count == 0 {
+		return ""
+	}
 	return w.list[(int(id)+index)%w.count]
 }
 
 func (w *Words) GetById(id uint64) string {
+	if w.count == 0 {
+		return ""
+	}
 	return w.list[int(id)%w.count]
 }
 
 func (w *Words) GetArrayByNum(index int, num int) []string {
 	var strs []string
+	if w.count == 0 {
+		return []string{}
+	}
 	for i := 1; i <= num; i++ {
 		n := index * i
 		if n < 0 {
@@ -55,26 +71,44 @@ func (w *Words) GetArrayByNum(index int, num int) []string {
 }
 
 func (w *Words) GetByTime(id uint64) string {
+	if w.count == 0 {
+		return ""
+	}
 	return w.list[(int(id)+time.Now().Day())%w.count]
 }
 
 func (w *Words) GetByTimeDay(id uint64) string {
+	if w.count == 0 {
+		return ""
+	}
 	return w.list[(int(id)+time.Now().Day())%w.count]
 }
 
 func (w *Words) GetByTimeHour(id uint64) string {
+	if w.count == 0 {
+		return ""
+	}
 	return w.list[(int(id)+time.Now().Hour())%w.count]
 }
 func (w *Words) GetByTimeMinute(id uint64) string {
+	if w.count == 0 {
+		return ""
+	}
 	return w.list[(int(id)+time.Now().Minute())%w.count]
 }
 
 func (w *Words) GetByTimeWeek(id uint64) string {
+	if w.count == 0 {
+		return ""
+	}
 	_, Week := time.Now().ISOWeek()
 	return w.list[(int(id)+Week)%w.count]
 }
 
 func (w *Words) GetName(pid uint64, index int, num int) string {
+	if w.count == 0 {
+		return ""
+	}
 	if num > 1000 {
 		num = num + index
 	}

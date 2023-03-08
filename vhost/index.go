@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"math/rand"
+	"net/url"
 	"os"
 	"path"
 	"path/filepath"
@@ -93,7 +94,7 @@ func (v *V) Get(version, domain string) (*Site, bool) {
 	return l.Get(domain)
 }
 
-func (v *V) GetOrNew(version, domain, f string) (*Site, error) {
+func (v *V) GetOrNew(version, domain, f string, hc bool) (*Site, error) {
 	l, ok := v.list.Get(version)
 	if !ok {
 		return nil, errors.New("404")
@@ -101,7 +102,7 @@ func (v *V) GetOrNew(version, domain, f string) (*Site, error) {
 	s, ok := l.Get(domain)
 	if !ok {
 		var err error
-		s, err = v.NewSite(version, domain, f, true)
+		s, err = v.NewSite(version, domain, f, true, hc)
 		if err != nil {
 			return nil, err
 		}
@@ -112,7 +113,7 @@ func (v *V) GetOrNew(version, domain, f string) (*Site, error) {
 	}
 	return s, nil
 }
-func (v *V) GetOrNewNotTemplate(version, domain, f string) (*Site, error) {
+func (v *V) GetOrNewNotTemplate(version, domain, f string, hc bool) (*Site, error) {
 	l, ok := v.list.Get(version)
 	if !ok {
 		return nil, errors.New("404")
@@ -120,7 +121,7 @@ func (v *V) GetOrNewNotTemplate(version, domain, f string) (*Site, error) {
 	s, ok := l.Get(domain)
 	if !ok {
 		var err error
-		s, err = v.NewSite(version, domain, f, false)
+		s, err = v.NewSite(version, domain, f, false, hc)
 		if err != nil {
 			return nil, err
 		}
@@ -135,12 +136,12 @@ func (v *V) GetOrNewNotTemplate(version, domain, f string) (*Site, error) {
 var ErrTemplateArticleNil = errors.New("not has template")
 var ErrTemplateListNil = errors.New("not has list template")
 
-func (v *V) NewSite(version, domain, f string, t bool) (*Site, error) {
+func (v *V) NewSite(version, domain, f string, t, hc bool) (*Site, error) {
 	s := &Site{}
 	s.Domain = domain
 	s.Index = -1
 	s.Num = rand.Intn(3000)
-	s.Num2 = uint64(rand.Int63n(8000))
+	s.Num2 = uint64(rand.Int63n(800000))
 	s.Table = utils.RandChars()
 	s.Key = s.Table[0:32]
 	s.InitTableMap()
@@ -162,13 +163,13 @@ func (v *V) NewSite(version, domain, f string, t bool) (*Site, error) {
 		if err != nil {
 			return s, err
 		}
-		err = v.getViews(s, tempDir)
+		err = v.getViews(s, tempDir, hc)
 		return s, err
 	}
 	return s, nil
 }
 
-func (v *V) getViews(s *Site, dir string) error {
+func (v *V) getViews(s *Site, dir string, hc bool) error {
 	conn, err := grpc.Dial(v.grpc, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
 		return err
@@ -176,20 +177,21 @@ func (v *V) getViews(s *Site, dir string) error {
 	defer conn.Close()
 	conn2 := pb.NewGreeterClient(conn)
 
-	res, err := conn2.GetListView(context.Background(), &pb.NullRequest{})
-	if err != nil {
-		return err
-	}
-	if len(res.Data) == 0 {
-		return ErrTemplateListNil
-	}
+	if hc {
+		res, err := conn2.GetListView(context.Background(), &pb.NullRequest{})
+		if err != nil {
+			return err
+		}
+		if len(res.Data) == 0 {
+			return ErrTemplateListNil
+		}
 
-	err = os.WriteFile(path.Join(dir, "list.jet"), res.Data, 0644)
-	if err != nil {
-		return err
+		err = os.WriteFile(path.Join(dir, "list.jet"), res.Data, 0644)
+		if err != nil {
+			return err
+		}
+		s.ListTemp = "list.jet"
 	}
-	s.ListTemp = "list.jet"
-
 	ares, err := conn2.GetArticleView(context.Background(), &pb.ArticleReq{Num: 1})
 	if err != nil {
 		return err
@@ -208,4 +210,9 @@ func (v *V) getViews(s *Site, dir string) error {
 	}
 	s.TempsLen = len(s.Temps)
 	return nil
+}
+
+func UrlPathEscape(s string) string {
+	s = strings.ReplaceAll(url.PathEscape(s), "-", "")
+	return strings.ReplaceAll(s, "/", "")
 }

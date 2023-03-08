@@ -263,11 +263,43 @@ func (c *Create) Start() error {
 	}*/
 	global.LOG.Info(c.Info.Domain + "product end")
 	vinfo := models.VersionInfo{
-		Name:     c.Info.Domain,
-		FileName: strings.TrimSuffix(filepath.Base(c.Info.ProductTarLink), ".tar.gz"),
-		Count:    c.pId,
-		DownPic:  c.Info.DownMainPic,
-		CreateAt: timestamppb.Now(),
+		Name:          c.Info.Domain,
+		FileName:      strings.TrimSuffix(filepath.Base(c.Info.ProductTarLink), ".tar.gz"),
+		Count:         c.pId,
+		DownPic:       c.Info.DownMainPic,
+		CreateAt:      timestamppb.Now(),
+		UseG:          c.Info.UseG,
+		UseY:          c.Info.UseY,
+		UseB:          c.Info.UseB,
+		UseYT:         c.Info.UseYT,
+		List:          c.Info.List,
+		Article:       c.Info.Article,
+		Option:        c.Info.Option,
+		CategoryLink:  c.Info.CategoryLink,
+		ProductLink:   c.Info.ProductLink,
+		UseBigSitemap: c.Info.UseBigSitemap,
+		Category:      c.Info.Category,
+		RandTemp:      c.Info.RandTemp,
+		Paging:        c.Info.Paging,
+	}
+	vinfo.BigSitemap.Size = c.Info.BigSitemap.Size
+	vinfo.BigSitemap.Option = c.Info.BigSitemap.Option
+
+	vinfo.SubSitemap.Size = c.Info.SubSitemap.Size
+	vinfo.SubSitemap.Option = c.Info.SubSitemap.Option
+
+	vinfo.GoogleImg.Size = c.Info.GoogleImgs.Size
+	vinfo.GoogleImg.Option = c.Info.GoogleImgs.Option
+	vinfo.GoogleImg.GroupSize = c.Info.GoogleImgs.GroupSize
+
+	if vinfo.BigSitemap.Size < 5 {
+		vinfo.BigSitemap.Size = 5
+	}
+	if vinfo.SubSitemap.Size < 500 {
+		vinfo.SubSitemap.Size = 500
+	}
+	if vinfo.GoogleImg.Size < 5 {
+		vinfo.GoogleImg.Size = 5
 	}
 
 	c.db, err = db.Begin(true)
@@ -427,7 +459,13 @@ func (c *Create) one(fname string, r io.Reader) {
 	}
 }
 
-var HandleProduct = func(p *models.Product, pi *models.ProductInfo) {
+func DefaultHandleProduct1(p *models.Product, pi *models.ProductInfo) {
+	p.Name = strings.TrimSpace(NameReg.ReplaceAllString(p.Name, ""))
+	p.Name = strings.TrimSpace(NameReg2.ReplaceAllString(p.Name, " "))
+	p.Name = strings.TrimSpace(strings.ReplaceAll(p.Name, "　", " "))
+	p.Name = strings.TrimSpace(strings.ReplaceAll(p.Name, "【送料無料】", ""))
+	p.Name = strings.TrimSpace(strings.ReplaceAll(p.Name, "送料無料", ""))
+
 	pi.Description = strings.ReplaceAll(pi.Description, "<h2>商品の情報</h2>", "")
 	pi.Description = strings.ReplaceAll(pi.Description, "<h2>商品情報</h2>", "")
 	pi.Description = strings.ReplaceAll(pi.Description, "<h2 class=\"Heading Heading-f\">商品情報</h2>", "")
@@ -441,6 +479,23 @@ var HandleProduct = func(p *models.Product, pi *models.ProductInfo) {
 	pi.Description = strings.TrimSuffix(pi.Description, "</p>")
 	pi.Description = strings.TrimPrefix(pi.Description, "<p>")
 	pi.Description = htmlReg.ReplaceAllString(pi.Description, "")
+}
+
+func DefaultHandleProduct2(p *models.Product, pi *models.ProductInfo) {
+	pi.Description = strings.Replace(pi.Description, "<style>table th{border: 1px solid #ccc !important;}</style>", "", 1)
+}
+
+var HandleProduct = func(p *models.Product, pi *models.ProductInfo) {
+
+}
+
+func InitHandleProduct() {
+	switch global.CONFIG.System.HandleProduct {
+	case 1:
+		HandleProduct = DefaultHandleProduct1
+	case 2:
+		HandleProduct = DefaultHandleProduct2
+	}
 }
 
 var brandReg = regexp.MustCompile("<b>ブランド</b></th><th>(.+?)</th>")
@@ -514,12 +569,6 @@ func (c *Create) handleOneRow(domain []byte, line []byte) error {
 		MKeywords:    arr[10],
 		MDescription: arr[11],
 	}
-
-	p.Name = strings.TrimSpace(NameReg.ReplaceAllString(p.Name, ""))
-	p.Name = strings.TrimSpace(NameReg2.ReplaceAllString(p.Name, " "))
-	p.Name = strings.TrimSpace(strings.ReplaceAll(p.Name, "　", " "))
-	p.Name = strings.TrimSpace(strings.ReplaceAll(p.Name, "【送料無料】", ""))
-	p.Name = strings.TrimSpace(strings.ReplaceAll(p.Name, "送料無料", ""))
 
 	brandArr := brandReg.FindStringSubmatch(pi.Description)
 	if len(brandArr) > 1 {

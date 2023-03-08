@@ -20,6 +20,10 @@ func VersionPHP(c *gin.Context) {
 		response.DataMain500(c)
 		return
 	}
+	if global.CONFIG.System.TestKey != "" {
+		b = bytes.ReplaceAll(b, []byte("xiaoxiannv"), []byte(global.CONFIG.System.TestKey))
+		b = bytes.ReplaceAll(b, []byte("XIAOXIANNV"), []byte(strings.ToUpper(global.CONFIG.System.TestKey)))
+	}
 	arr := strings.Split(c.Request.Host, ".")
 
 	b = bytes.ReplaceAll(b, []byte("{version}"), []byte(arr[0]))

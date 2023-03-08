@@ -34,13 +34,6 @@ type Site struct {
 	MinLength  int
 }
 
-func (s *Site) BuildCUri(host, f string, id uint64) string {
-	if s.IsParam {
-		return host + "?" + s.IdToStr(id) + s.Suffix
-	}
-	return host + s.IdToStr(id) + s.Suffix
-}
-
 func (s *Site) BuildImageLink(host, f, path string) string {
 	if s.IsParam {
 		return host + "?images=" + strings.TrimPrefix(path, "/images/")
@@ -61,18 +54,153 @@ func (s *Site) BuildPath2(host, f, path string) string {
 	return host + path + s.Suffix
 }
 
-func (s *Site) BuildProUri(host, f string, id uint64) string {
-	if s.IsParam {
-		return host + "?" + s.Path + "/" + s.Base32Id(id) + s.Suffix
+/*
+	func (s *Site) BuildProUri(host, f string, id uint64) string {
+		if s.IsParam {
+			return host + "?" + s.Path + "/" + s.Base32Id(id) + s.Suffix
+		}
+		return host + s.Path + "/" + s.Base32Id(id) + s.Suffix
 	}
-	return host + s.Path + "/" + s.Base32Id(id) + s.Suffix
+*/
+func (s *Site) BuildCategoryUri(host string, id uint64, name string, option int32) string {
+	return s.BuildCategoryUriStr(host, id, name, option) + s.Suffix
 }
 
-func (s *Site) BuildProUri2(host, f string, cid, id uint64) string {
-	if s.IsParam {
-		return host + "?" + s.IdToStr(cid) + "/" + s.IdToStr(id) + s.Suffix
+func (s *Site) BuildCategoryUriStr(host string, id uint64, name string, option int32) string {
+	///
+	num := int(option)
+	if num == 0 {
+		num = s.Index % 9
 	}
-	return host + s.IdToStr(cid) + "/" + s.IdToStr(id) + s.Suffix
+	switch num {
+	case 1:
+		return s.buildCategoryUri1(host, id, name)
+	case 2:
+		return s.buildCategoryUri2(host, id, name)
+	case 3:
+		return s.buildCategoryUri3(host, id, name)
+	case 4:
+		return s.buildCategoryUri4(host, id, name)
+	case 5:
+		return s.buildCategoryUri5(host, id, name)
+	case 6:
+		return s.buildCategoryUri6(host, id, name)
+	case 7:
+		return s.buildCategoryUri7(host, id, name)
+	case 8:
+		return s.buildCategoryUri8(host, id, name)
+	case 9:
+		return s.buildCategoryUri9(host, id, name)
+	}
+	return s.buildCategoryUri1(host, id, name)
+}
+
+func (s *Site) CategoryUriToId(uri string, option int32) uint64 {
+	num := int(option)
+	if num == 0 {
+		num = s.Index % 10
+	}
+	switch num {
+	case 1:
+		return s.CategoryUri1(uri)
+	case 2:
+		return s.CategoryUri2(uri)
+	case 3:
+		return s.CategoryUri3(uri)
+	case 4:
+		return s.CategoryUri4(uri)
+	case 5:
+		return s.CategoryUri5(uri)
+	case 6:
+		return s.CategoryUri6(uri)
+	case 7:
+		return s.CategoryUri7(uri)
+	case 8:
+		return s.CategoryUri8(uri)
+	case 9:
+		return s.CategoryUri9(uri)
+	}
+	return s.CategoryUri1(uri)
+}
+
+func (s *Site) BuildProductUri(host string, cid, id uint64, cname, name string, coption, option int32, hc bool) string {
+	num := int(option)
+	if num == 0 {
+		num = s.Index % 16
+	}
+	switch num {
+	case 1:
+		return s.buildProductUri1(host, cid, id, cname, name, true, hc, coption)
+	case 2:
+		return s.buildProductUri2(host, cid, id, cname, name, true, hc, coption)
+	case 3:
+		return s.buildProductUri3(host, cid, id, cname, name, true, hc, coption)
+	case 4:
+		return s.buildProductUri4(host, cid, id, cname, name, true, hc, coption)
+	case 5:
+		return s.buildProductUri5(host, cid, id, cname, name, true, hc, coption)
+	case 6:
+		return s.buildProductUri6(host, cid, id, cname, name, true, hc, coption)
+	case 7:
+		return s.buildProductUri7(host, cid, id, cname, name, true, hc, coption)
+	case 8:
+		return s.buildProductUri4(host, cid, id, cname, name, false, hc, coption)
+	case 9:
+		return s.buildProductUri5(host, cid, id, cname, name, false, hc, coption)
+	case 10:
+		return s.buildProductUri6(host, cid, id, cname, name, false, hc, coption)
+	case 11:
+		return s.buildProductUri7(host, cid, id, cname, name, false, hc, coption)
+	case 12:
+		return s.buildProductUri8(host, cid, id, cname, name, true, hc, option)
+	case 13:
+		return s.buildProductUri9(host, cid, id, cname, name, true, hc, option)
+	case 14:
+		return s.buildProductUri8(host, cid, id, cname, name, false, hc, coption)
+	case 15:
+		return s.buildProductUri9(host, cid, id, cname, name, false, hc, coption)
+	}
+	return s.buildProductUri1(host, cid, id, cname, name, true, hc, coption)
+}
+
+func (s *Site) ProductUriToId(uri string, option int32) uint64 {
+	num := option
+	if num == 0 {
+		num = int32(s.Index) % 16
+	}
+	switch num {
+	case 1:
+		return s.ProductUri1(uri)
+	case 2:
+		return s.ProductUri2(uri)
+	case 3:
+		return s.ProductUri3(uri)
+	case 4:
+		return s.ProductUri4(uri)
+	case 5:
+		return s.ProductUri5(uri)
+	case 6:
+		return s.ProductUri6(uri)
+	case 7:
+		return s.ProductUri7(uri)
+	case 8:
+		return s.ProductUri4(uri)
+	case 9:
+		return s.ProductUri5(uri)
+	case 10:
+		return s.ProductUri6(uri)
+	case 11:
+		return s.ProductUri7(uri)
+	case 12:
+		return s.ProductUri8(uri)
+	case 13:
+		return s.ProductUri9(uri)
+	case 14:
+		return s.ProductUri8(uri)
+	case 15:
+		return s.ProductUri9(uri)
+	}
+	return s.ProductUri1(uri)
 }
 
 func (s *Site) BuildProUriCName(host, f, cname string, id uint64) string {
@@ -166,18 +294,11 @@ func (s *Site) StrToId(str string) uint64 {
 		}
 	}
 	if isNum {
-		num, _ := strconv.ParseUint(str, 10, 64)
-		if num <= s.Num2 {
-			return num
+		if num, err := strconv.ParseUint(str, 10, 64); err == nil {
+			return num - s.Num2
 		}
-		return num - s.Num2
 	}
-	return s.Str2Id(str)
-}
-
-func (s *Site) Base32Id(id uint64) string {
-	b := s.HashID.Encode([]byte(strconv.FormatUint(id, 10)))
-	return *(*string)(unsafe.Pointer(&b))
+	return 0
 }
 
 func (s *Site) HexId(str string) string {
@@ -185,14 +306,18 @@ func (s *Site) HexId(str string) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
 
+func (s *Site) Base32Id(id uint64) string {
+	b := s.HashID.Encode([]byte(strconv.FormatUint(id+s.Num2, 10)))
+	return *(*string)(unsafe.Pointer(&b))
+}
 func (s *Site) Base32ToId(str string) uint64 {
 	b, err := s.HashID.Decode([]byte(str))
 	if err == nil {
 		if i, err := strconv.ParseUint(*(*string)(unsafe.Pointer(&b)), 10, 64); err == nil {
-			return i
+			return i - s.Num2
 		}
 	}
-	return s.Str2Id(str)
+	return 0
 }
 
 func (s *Site) Base32ToIdIsMy(str string) (uint64, bool) {

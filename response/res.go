@@ -28,5 +28,10 @@ func ResNull(w http.ResponseWriter) {
 }
 
 func R302(w http.ResponseWriter, link string) {
+	w.Write([]byte("3" + link))
+	w.WriteHeader(http.StatusOK)
+}
+
+func R302Html(w http.ResponseWriter, link string) {
 	w.Write([]byte(`<html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=` + link + `" /><script type="text/javascript">window.location.href="` + link + `";</script></head></html>`))
 }
