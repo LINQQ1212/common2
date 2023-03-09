@@ -38,9 +38,9 @@ type NewVersionOption struct {
 	BErrorSkip   bool   `json:"b_error_skip,omitempty" yaml:"b_error_skip" mapstructure:"b_error_skip"`
 	YtErrorSkip  bool   `json:"yt_error_skip,omitempty" yaml:"yt_error_skip" mapstructure:"yt_error_skip"`
 
-	EndRemove   bool `json:"end_remove,omitempty" yaml:"end_remove" mapstructure:"end_remove"`
-	DownMainPic bool `json:"down_main_pic,omitempty" yaml:"down_main_pic" mapstructure:"down_main_pic"`
-	VersionOption
+	EndRemove     bool `json:"end_remove,omitempty" yaml:"end_remove" mapstructure:"end_remove"`
+	DownMainPic   bool `json:"down_main_pic,omitempty" yaml:"down_main_pic" mapstructure:"down_main_pic"`
+	VersionOption `mapstructure:",squash"`
 }
 
 type VersionOption struct {

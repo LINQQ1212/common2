@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"fmt"
 	"github.com/LINQQ1212/common2/admin/models"
 	"github.com/LINQQ1212/common2/global"
 	"github.com/LINQQ1212/common2/middleware/jwt_server"
@@ -34,12 +35,14 @@ func Login(c *gin.Context) {
 			response.FailWithMessage(err.Error(), c)
 		}
 
+		fmt.Println(global.CONFIG.VersionOption)
+
 		response.OkWithData(gin.H{
 			"id":                 "root",
 			"name":               "root",
 			"token":              str,
 			"info":               global.CONFIG.System.Info,
-			"new-version-option": global.CONFIG.NewVersionOption,
+			"new-version-option": global.CONFIG.VersionOption,
 		}, c)
 		return
 	}

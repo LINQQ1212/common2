@@ -169,7 +169,7 @@ type VersionInfo struct {
 	Category      bool                   `protobuf:"varint,19,opt,name=Category,proto3" json:"category"`             // @gotags: json:"category"
 	RandTemp      bool                   `protobuf:"varint,20,opt,name=RandTemp,proto3" json:"rand_temp"`            // @gotags: json:"rand_temp"
 	Paging        bool                   `protobuf:"varint,21,opt,name=Paging,proto3" json:"paging"`                 // @gotags: json:"paging"
-	Word          bool                   `protobuf:"varint,22,opt,name=Word,proto3" json:"paging"`                   // @gotags: json:"paging"
+	Word          bool                   `protobuf:"varint,22,opt,name=Word,proto3" json:"word"`                     // @gotags: json:"word"
 }
 
 func (x *VersionInfo) Reset() {

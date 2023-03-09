@@ -97,3 +97,8 @@ func Version(c *gin.Context) {
 	response.Ok(c)
 
 }
+
+func VersionTemplate(c *gin.Context) {
+	response.OkWithData(global.CONFIG.VersionOption, c)
+	return
+}

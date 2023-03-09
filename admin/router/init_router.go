@@ -41,5 +41,6 @@ func InitRouter(r *gin.Engine) {
 		admin.POST("/new/domain", apis.NewDomain)
 		admin.POST("/version", apis.Version)
 		admin.GET("/get_templates", apis.TemplateList)
+		admin.GET("/version_templates", apis.VersionTemplate)
 	}
 }

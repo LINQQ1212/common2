@@ -25,6 +25,7 @@ func NewVersionV2(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+
 	dir := strings.TrimSuffix(path.Base(req.ProductTarLink), ".tar.gz")
 	if dir == "" {
 		response.FailWithMessage("产品tar链接异常，为空", c)
